@@ -55,7 +55,7 @@ namespace Gui {
                     WebServer.Terminate();
                     break;
                 case "status":
-                    PrintText("Server status is:" + WebServer.ListenThread.IsAlive);
+                    PrintText("Server is active: " + WebServer.ListenThread.IsAlive);
                     break;
             }
             Term.InsertNewPrompt();

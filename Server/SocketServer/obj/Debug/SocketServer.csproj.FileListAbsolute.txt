@@ -8,3 +8,8 @@ C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\SocketServer\bin\Debug\Sock
 C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.csprojResolveAssemblyReference.cache
 C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.dll
 C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.pdb
+D:\Github\hjortehandlerne\Server\SocketServer\bin\Debug\SocketServer.dll
+D:\Github\hjortehandlerne\Server\SocketServer\bin\Debug\SocketServer.pdb
+D:\Github\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.csprojResolveAssemblyReference.cache
+D:\Github\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.dll
+D:\Github\hjortehandlerne\Server\SocketServer\obj\Debug\SocketServer.pdb

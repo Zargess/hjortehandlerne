@@ -16,6 +16,7 @@ namespace SocketServer {
         private bool Stop { get; set; }
         private Action<string> Print { get; set; }
 
+        // TODO: Make a garbage collector over Clients, so that every none active client is removed from the server emidiatly
         public Server(Action<string> print) {
             Listener = new TcpListener(IPAddress.Any, 8060);
             ListenThread = new Thread(ListenForClients);
@@ -30,56 +31,53 @@ namespace SocketServer {
         }
 
         public void Terminate() {
-            ListenThread.Interrupt();
+            Listener.Stop();
             Stop = true;
             Clients.ForEach(x => x.Close());
+            Print("Done");
         }
 
         private void ListenForClients() {
             Listener.Start();
             while (!Stop) {
-                var client = Listener.AcceptTcpClient();
-                var clientThread = new Thread(HandleClientComm);
-                clientThread.Start(client);
-                if (!Clients.Contains(client)) {
-                    Clients.Add(client);
-                }
+                try {
+                    var client = Listener.AcceptTcpClient();
+                    var clientThread = new Thread(HandleClientComm);
+                    clientThread.Start(client);
+                    if (!Clients.Contains(client)) {
+                        Clients.Add(client);
+                    }
+                } catch (SocketException) { }
             }
-            Print("Done");
         }
 
         private void HandleClientComm(object client) {
-            var tcpClient = (TcpClient)client;
-            var clientStream = tcpClient.GetStream();
-            var ns = tcpClient.GetStream();
-            var sw = new StreamWriter(ns);
+            using(var tcpClient = (TcpClient)client)
+            using(var ns = tcpClient.GetStream())
+            using (var sw = new StreamWriter(ns)) {
+                var message = new byte[4096];
+                while (true) {
+                    var bytesRead = 0;
 
-            var message = new byte[4096];
-            while (true) {
-                var bytesRead = 0;
+                    try {
+                        bytesRead = ns.Read(message, 0, 4096);
+                    } catch {
+                        break;
+                    }
 
-                try {
-                    bytesRead = clientStream.Read(message, 0, 4096);
-                } catch {
-                    break;
+                    if (bytesRead == 0) {
+                        break;
+                    }
+                    var address = tcpClient.Client.RemoteEndPoint;
+                    var encoder = new UTF8Encoding();
+                    var m = encoder.GetString(message, 0, bytesRead).Split('\n')[0];
+                    Print("(from client: " + address + ") => " + m);
+                    var s = encoder.GetString(message, 0, bytesRead);
+                    if (!ns.CanWrite) continue;
+                    sw.WriteLine(s);
+                    sw.Flush();
                 }
-
-                if (bytesRead == 0) {
-                    break;
-                }
-                var temp = tcpClient.Client.RemoteEndPoint;
-                var encoder = new UTF8Encoding();
-                var m = encoder.GetString(message, 0, bytesRead).Split('\n')[0];
-                Print("(from client: " + temp + ") => " + m);
-                var s = encoder.GetString(message, 0, bytesRead);
-                if (!ns.CanWrite) continue;
-                sw.WriteLine(s);
-                sw.Flush();
             }
-
-            sw.Close();
-            ns.Close();
-            tcpClient.Close();
         }
     }
 }
