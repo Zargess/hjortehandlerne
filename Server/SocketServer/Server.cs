@@ -9,24 +9,28 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SocketServer {
-    class Server {
+    public class Server {
         private TcpListener Listener { get; set; }
         public Thread ListenThread { get; private set; }
         private List<TcpClient> Clients { get; set; }
         private bool Stop { get; set; }
+        private Action<string> Print { get; set; }
 
-        public Server() {
+        public Server(Action<string> print) {
             Listener = new TcpListener(IPAddress.Any, 8060);
             ListenThread = new Thread(ListenForClients);
             Clients = new List<TcpClient>();
+            Print = print;
         }
 
         public void StartServer() {
             Stop = false;
+            Print("Server is starting");
             ListenThread.Start();
         }
 
         public void Terminate() {
+            ListenThread.Interrupt();
             Stop = true;
             Clients.ForEach(x => x.Close());
         }
@@ -41,6 +45,7 @@ namespace SocketServer {
                     Clients.Add(client);
                 }
             }
+            Print("Done");
         }
 
         private void HandleClientComm(object client) {
@@ -65,7 +70,7 @@ namespace SocketServer {
                 var temp = tcpClient.Client.RemoteEndPoint;
                 var encoder = new UTF8Encoding();
                 var m = encoder.GetString(message, 0, bytesRead).Split('\n')[0];
-                Console.WriteLine("(from client: " + temp + ") => " + m);
+                Print("(from client: " + temp + ") => " + m);
                 var s = encoder.GetString(message, 0, bytesRead);
                 if (!ns.CanWrite) continue;
                 sw.WriteLine(s);

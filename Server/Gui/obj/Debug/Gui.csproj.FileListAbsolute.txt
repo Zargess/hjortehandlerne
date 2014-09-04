@@ -13,3 +13,20 @@ C:\Users\MFH\Dropbox\Uni\Pervasive Computing\Server\Gui\obj\Debug\Gui.exe
 C:\Users\MFH\Dropbox\Uni\Pervasive Computing\Server\Gui\obj\Debug\Gui.pdb
 C:\Users\MFH\Dropbox\Uni\Pervasive Computing\Server\Gui\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\MFH\Dropbox\Uni\Pervasive Computing\Server\Gui\obj\Debug\Gui_MarkupCompile.lref
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\bin\Debug\Gui.exe.config
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.exe
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.pdb
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\bin\Debug\Gui.exe
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\bin\Debug\Gui.pdb
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.csprojResolveAssemblyReference.cache
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\MainWindow.g.cs
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\App.g.cs
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui_MarkupCompile.cache
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui_MarkupCompile.lref
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\MainWindow.baml
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.g.resources
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.Properties.Resources.resources
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\obj\Debug\Gui.csproj.GenerateResource.Cache
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\bin\Debug\SocketServer.dll
+C:\Users\MFH\Documents\GitHub\hjortehandlerne\Server\Gui\bin\Debug\SocketServer.pdb

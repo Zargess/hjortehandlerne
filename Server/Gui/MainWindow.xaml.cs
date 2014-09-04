@@ -12,38 +12,57 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SocketServer;
 
 namespace Gui {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow {
+        private Server WebServer { get; set; }
+
         public MainWindow() {
             InitializeComponent();
             Loaded += (s, e) => {
                 Term.AbortRequested += (ss, ee) => MessageBox.Show("Abort !");
-                Term.CommandEntered += (ss, ee) => Term.InsertNewPrompt();
+                Term.CommandEntered += (ss, ee) => CheckCommands(ee.Command);
 
-                Term.RegisteredCommands.Add("set-root");
-                Term.RegisteredCommands.Add("set-stat-fold");
-                Term.RegisteredCommands.Add("load");
-                Term.RegisteredCommands.Add("reload");
-                Term.RegisteredCommands.Add("server");
+                Term.RegisteredCommands.Add("start");
+                Term.RegisteredCommands.Add("status");
                 Term.RegisteredCommands.Add("exit");
+                Term.RegisteredCommands.Add("help");
 
                 Term.Text += "Welcome !\n";
                 Term.Text += "Hit tab to complete your current command.\n";
                 Term.Text += "Use ctrl+c to raise an AbortRequested event.\n\n";
-                Term.Text += "Available commands are:\n";
-                Term.RegisteredCommands.ForEach(cmd => Term.Text += "  - " + cmd + "\n");
+                Term.ShowCommands();
                 Term.InsertNewPrompt();
 
                 Term.Focus();
+                WebServer = new Server(PrintText);
             };
         }
 
+        private void CheckCommands(Command command) {
+            switch (command.Name) {
+                case "help":
+                    Term.ShowCommands();
+                    break;
+                case "start":
+                    WebServer.StartServer();
+                    break;
+                case "exit":
+                    WebServer.Terminate();
+                    break;
+                case "status":
+                    PrintText("Server status is:" + WebServer.ListenThread.IsAlive);
+                    break;
+            }
+            Term.InsertNewPrompt();
+        }
+
         public void PrintText(string text) {
-            
+            Term.Print(text);
         }
     }
 }

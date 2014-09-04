@@ -60,9 +60,19 @@ namespace Gui {
         public void InsertLineBeforePrompt(string text) {
             var oldPromptIndex = LastPomptIndex;
             var insertedText = text + (text.EndsWith("\n") ? "" : "\n");
+            var q = LastPomptIndex - Prompt.Length;
             Text = Text.Insert(LastPomptIndex - Prompt.Length, insertedText);
             CaretIndex = Text.Length;
             LastPomptIndex = oldPromptIndex + insertedText.Length;
+        }
+
+        public void ShowCommands() {
+            Text += "Available commands are:\n";
+            RegisteredCommands.ForEach(cmd => Text += "  - " + cmd + "\n");
+        }
+
+        public void Print(string text) {
+            Text += text + "\n";
         }
 
         // --------------------------------------------------------------------
