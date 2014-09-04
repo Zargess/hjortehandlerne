@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textContainer"
+            android:layout_marginTop="100dp"
+            android:orientation="horizontal">
+            <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:contentDescription="255.255.255.255"/>
+    </LinearLayout>
+
+</RelativeLayout>

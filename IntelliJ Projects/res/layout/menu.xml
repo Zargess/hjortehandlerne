@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Single menu item
+         Set id, icon and Title for each menu item
+    -->
+    <item android:id="@+id/menu_settings"
+          android:title="Indstillinger" />
+    <item android:id="@+id/menu_connect"
+          android:title="Connect to server"/>
+    <item android:id="@+id/menu_disconnect"
+          android:title="Disconnect from server"/>
+</menu>
