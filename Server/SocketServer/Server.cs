@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace SocketServer {
     public class Server {
@@ -15,13 +16,15 @@ namespace SocketServer {
         private List<TcpClient> Clients { get; set; }
         private bool Stop { get; set; }
         private Action<string> Print { get; set; }
+        private Dispatcher Disp { get; set; }
 
         // TODO: Make a garbage collector over Clients, so that every none active client is removed from the server emidiatly
-        public Server(Action<string> print) {
+        public Server(Action<string> print, Dispatcher dispatcher) {
             Listener = new TcpListener(IPAddress.Any, 8060);
             ListenThread = new Thread(ListenForClients);
             Clients = new List<TcpClient>();
             Print = print;
+            Disp = dispatcher;
         }
 
         public void StartServer() {
@@ -71,7 +74,7 @@ namespace SocketServer {
                     var address = tcpClient.Client.RemoteEndPoint;
                     var encoder = new UTF8Encoding();
                     var m = encoder.GetString(message, 0, bytesRead).Split('\n')[0];
-                    Print("(from client: " + address + ") => " + m);
+                    Disp.Invoke(() => Print("(from client: " + address + ") => " + m));
                     var s = encoder.GetString(message, 0, bytesRead);
                     if (!ns.CanWrite) continue;
                     sw.WriteLine(s);
