@@ -39,7 +39,7 @@ namespace Gui {
                 Term.InsertNewPrompt();
 
                 Term.Focus();
-                WebServer = new Server(PrintText);
+                WebServer = new Server(PrintText, Application.Current.Dispatcher);
             };
         }
 
