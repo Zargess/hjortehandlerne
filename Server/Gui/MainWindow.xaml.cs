@@ -29,6 +29,7 @@ namespace Gui {
 
                 Term.RegisteredCommands.Add("start");
                 Term.RegisteredCommands.Add("status");
+                Term.RegisteredCommands.Add("print-users");
                 Term.RegisteredCommands.Add("exit");
                 Term.RegisteredCommands.Add("help");
 
@@ -57,12 +58,15 @@ namespace Gui {
                 case "status":
                     PrintText("Server is active: " + WebServer.ListenThread.IsAlive);
                     break;
+                case "print-users":
+                    WebServer.Users.ForEach(PrintText);
+                    break;
             }
             Term.InsertNewPrompt();
         }
 
-        public void PrintText(string text) {
-            Term.Print(text);
+        public void PrintText(object text) {
+            Term.Print(text.ToString());
         }
     }
 }

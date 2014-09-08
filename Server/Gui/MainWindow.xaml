@@ -4,7 +4,6 @@
         xmlns:local="clr-namespace:Gui"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-
         <local:Terminal Grid.Row="0" x:Name="Term" FontFamily="Courier New" FontSize="12"
 				IsPromptInsertedAtLaunch="False" IsSystemBeepEnabled="True"
 				VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="Black" Foreground="White" />

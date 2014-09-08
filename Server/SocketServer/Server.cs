@@ -17,6 +17,7 @@ namespace SocketServer {
         private bool Stop { get; set; }
         private Action<string> Print { get; set; }
         private Dispatcher Disp { get; set; }
+        public List<User> Users { get; private set; } 
 
         // TODO: Make a garbage collector over Clients, so that every none active client is removed from the server emidiatly
         public Server(Action<string> print, Dispatcher dispatcher) {
@@ -25,6 +26,7 @@ namespace SocketServer {
             Clients = new List<TcpClient>();
             Print = print;
             Disp = dispatcher;
+            Users = new List<User>();
         }
 
         public void StartServer() {
@@ -79,6 +81,9 @@ namespace SocketServer {
                     if (!ns.CanWrite) continue;
                     sw.WriteLine(s);
                     sw.Flush();
+                }
+                if (!tcpClient.Connected && Clients.Contains(tcpClient)) {
+                    Clients.Remove(tcpClient);
                 }
             }
         }
