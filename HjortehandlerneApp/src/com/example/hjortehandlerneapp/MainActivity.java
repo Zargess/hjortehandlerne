@@ -1,17 +1,23 @@
 package com.example.hjortehandlerneapp;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 public class MainActivity extends ActionBarActivity {
-
+	private EditText textbox;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textbox = (EditText)findViewById(R.id.tbox);
     }
 
     @Override
@@ -31,5 +37,11 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    public void btnNextClick(View v) {
+    	Intent i = new Intent(getApplicationContext(),MapActivity.class);
+    	i.putExtra("name", textbox.getText().toString());
+    	startActivity(i);
     }
 }
