@@ -19,7 +19,7 @@ namespace SocketServer {
         private Dispatcher Disp { get; set; }
         public List<User> Users { get; private set; } 
 
-        // TODO: Make a garbage collector over Clients, so that every none active client is removed from the server emidiatly
+        // TODO: Make a garbage collector over Clients, so that every none active client is removed from the server imidiatly
         public Server(Action<string> print, Dispatcher dispatcher) {
             Listener = new TcpListener(IPAddress.Any, 8060);
             ListenThread = new Thread(ListenForClients);
