@@ -1,5 +1,8 @@
 package com.example.hjortehandlerneapp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
@@ -15,6 +18,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private LatLng myLocation;
 	private String name;
 	private MarkerOptions marker;
+	private List<MarkerOptions> otherUsers;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -26,9 +30,11 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		map.setOnMapLoadedCallback(this);
 		Intent i = getIntent();
 		name = i.getStringExtra("name");
+		otherUsers = new ArrayList<MarkerOptions>();
 	}
 
-	private void centerMapOnMyLocation() {
+	@Override
+	public void onMapLoaded() {
 		if (map != null) {
 			map.setMyLocationEnabled(true);
 			// Set the map to current location
@@ -50,10 +56,5 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 				}
 			});
 		}
-	}
-
-	@Override
-	public void onMapLoaded() {
-		centerMapOnMyLocation();
 	}
 }
