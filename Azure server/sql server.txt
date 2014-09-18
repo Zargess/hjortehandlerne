@@ -1,2 +1,2 @@
 Sql server connection string:
-jdbc:sqlserver://ehprrxgjbl.database.windows.net:1433;database=Test;user=zargess@ehprrxgjbl;password={your_password_here};encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+jdbc:sqlserver://ehprrxgjbl.database.windows.net:1433;database=Test;user=zargess@ehprrxgjbl;password=TETRhUIq7KJb3jHHOmm1;encrypt=true;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
