@@ -1,5 +1,7 @@
 package com.example.hjortehandlerneapp;
 
+import java.sql.ResultSet;
+
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,8 +40,11 @@ public class MainActivity extends ActionBarActivity {
     }
     
     public void btnNextClick(View v) {
-    	Intent i = new Intent(getApplicationContext(),MapActivity.class);
-    	i.putExtra("name", textbox.getText().toString());
-    	startActivity(i);
+//    	SqlManager.EditInformation(SqlManager.createNewUser(textbox.getText().toString(), "Humus"));
+    	ResultSet s = SqlManager.FetchInformation(SqlManager.GETALL);
+    	
+//    	Intent i = new Intent(getApplicationContext(),MapActivity.class);
+//    	i.putExtra("name", textbox.getText().toString());
+//    	startActivity(i);
     }
 }

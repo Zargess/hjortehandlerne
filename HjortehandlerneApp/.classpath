@@ -6,5 +6,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="C:/Users/MFH/Microsoft JDBC Driver 4.0 for SQL/sqljdbc_4.0/enu/sqljdbc4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
