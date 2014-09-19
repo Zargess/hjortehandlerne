@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textbox = (EditText)findViewById(R.id.tbox);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy); 
     }
 
     @Override
@@ -40,8 +44,8 @@ public class MainActivity extends ActionBarActivity {
     }
     
     public void btnNextClick(View v) {
-//    	SqlManager.EditInformation(SqlManager.createNewUser(textbox.getText().toString(), "Humus"));
-    	ResultSet s = SqlManager.FetchInformation(SqlManager.GETALL);
+    	SqlManager.EditInformation(SqlManager.createNewUser(textbox.getText().toString(), "Humus"));
+//    	ResultSet s = SqlManager.FetchInformation(SqlManager.GETALL);
     	
 //    	Intent i = new Intent(getApplicationContext(),MapActivity.class);
 //    	i.putExtra("name", textbox.getText().toString());

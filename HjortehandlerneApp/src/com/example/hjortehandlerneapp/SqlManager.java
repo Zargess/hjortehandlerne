@@ -5,12 +5,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import com.microsoft.sqlserver.jdbc.*;
+
 
 public class SqlManager {
-	public static final String CONNECTIONSTRING = "jdbc:sqlserver://ehprrxgjbl.database.windows.net:1433;database=Test;"
+	public static final String CONNECTIONSTRING = "jdbc:jtds:sqlserver://ehprrxgjbl.database.windows.net:1433;database=Test;"
 			+ "user=zargess@ehprrxgjbl;password=TETRhUIq7KJb3jHHOmm1;encrypt=true;hostNameInCertificate=*."
-			+ "database.windows.net;loginTimeout=30;";
+			+ "database.windows.net;loginTimeout=30;ssl=require;";
 	public static final String GETALL = "SELECT * FROM Users";
 
 	public static String createNewUser(String Name, String Password) {
@@ -29,7 +29,7 @@ public class SqlManager {
 		Statement statement = null;
 
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
 			connection = DriverManager.getConnection(CONNECTIONSTRING);
 
@@ -61,7 +61,7 @@ public class SqlManager {
 		ResultSet resultSet = null;
 
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
 			connection = DriverManager.getConnection(CONNECTIONSTRING);
 
