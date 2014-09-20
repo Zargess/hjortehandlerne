@@ -18,6 +18,7 @@ import com.microsoft.windowsazure.mobileservices.*;
 
 public class MainActivity extends ActionBarActivity {
 	private EditText textbox;
+	private EditText pwordbox;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
 
@@ -26,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		textbox = (EditText) findViewById(R.id.tbox);
-
+		pwordbox = (EditText) findViewById(R.id.pword);
 		try {
 			mService = new MobileServiceClient(
 					"https://pervasivehjorte.azure-mobile.net/",
@@ -65,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
 		Users u = new Users();
 		u.setName(name);
 		u.setLocation("");
-		u.setPassword("DinMor");
+		u.setPassword(pwordbox.getText().toString());
 
 		mTable.insert(u, new TableOperationCallback<Users>() {
 			@Override
@@ -73,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
 					ServiceFilterResponse response) {
 				Log.i("New user", user.getId());
 				mTable = mService.getTable(Users.class);
-				switchActivity(user.getName(), user.getId());
+				switchActivity(user);
 			}
 		});
 	}
@@ -85,8 +86,7 @@ public class MainActivity extends ActionBarActivity {
 					public void onCompleted(List<Users> result, int count,
 							Exception ex, ServiceFilterResponse response) {
 						if (result.size() == 1) {
-							Users u = result.get(0);
-							switchActivity(u.getName(), u.getId());
+							switchActivity(result.get(0));
 						} else {
 							createUser(name);
 						}
@@ -98,10 +98,12 @@ public class MainActivity extends ActionBarActivity {
 		userExists(textbox.getText().toString());
 	}
 
-	private void switchActivity(String name, String id) {
+	private void switchActivity(Users user) {
 		Intent i = new Intent(getApplicationContext(), MapActivity.class);
-		i.putExtra("name", name);
-		i.putExtra("id", id);
+		i.putExtra("name", user.getName());
+		i.putExtra("id", user.getId());
+		i.putExtra("password", user.getPassword());
+		i.putExtra("location", user.getLocation());
 		startActivity(i);
 	}
 }

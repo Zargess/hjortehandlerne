@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,18 +9,25 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
     tools:context="com.example.hjortehandlerneapp.MainActivity" >
-    
-    <Button 
-        android:id="@+id/nextMain"
-        android:text="@string/nextMainBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="btnNextClick" />
 
     <EditText 
         android:id="@+id/tbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
+    
+    <EditText 
+        android:id="@+id/pword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:password="true" />
+    
+    <Button 
+        android:id="@+id/nextMain"
+        android:text="@string/nextMainBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnNextClick" />
 
 </LinearLayout>
