@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="C:/Users/MFH/Desktop/jtds-1.3.1-dist/jtds-1.3.1.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/google-play-services_lib"/>
+	<classpathentry exported="true" kind="lib" path="jars/gson-2.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/mobileservices-1.1.5.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
