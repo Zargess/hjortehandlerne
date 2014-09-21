@@ -1,12 +1,14 @@
 package com.example.hjortehandlerneapp;
 
 import java.net.MalformedURLException;
+import java.sql.ResultSet;
 import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
