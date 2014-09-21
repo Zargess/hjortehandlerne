@@ -1,14 +1,12 @@
 package com.example.hjortehandlerneapp;
 
 import java.net.MalformedURLException;
-import java.sql.ResultSet;
 import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,7 +83,7 @@ public class MainActivity extends ActionBarActivity {
 					@Override
 					public void onCompleted(List<Users> result, int count,
 							Exception ex, ServiceFilterResponse response) {
-						if (result.size() == 1) {
+						if (result.size() >= 1) {
 							switchActivity(result.get(0));
 						} else {
 							createUser(name);

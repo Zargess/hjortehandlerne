@@ -1,7 +1,7 @@
 package com.example.hjortehandlerneapp;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
@@ -21,7 +21,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private LatLng myLocation;
 	private Users user;
 	private MarkerOptions marker;
-	private List<MarkerOptions> otherUsers;
+	private HashMap<String,MarkerOptions> otherUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
 
@@ -39,7 +39,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		user.setLocation(i.getStringExtra("location"));
 		user.setName(i.getStringExtra("name"));
 		user.setPassword(i.getStringExtra("password"));
-		otherUsers = new ArrayList<MarkerOptions>();
+		otherUsers = new HashMap<String,MarkerOptions>();
 		try {
 			mService = new MobileServiceClient(
 					"https://pervasivehjorte.azure-mobile.net/",
@@ -65,18 +65,51 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 								.title("My location").snippet(user.getName())
 								.draggable(false);
 						map.addMarker(marker);
+						CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
+								myLocation, 16);
+						map.moveCamera(update);
 					} else {
 						marker.position(myLocation);
 					}
 					updatePositionOnServer(myLocation);
-					CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
-							myLocation, 16);
-					map.moveCamera(update);
+					findOtherUsers();
 				}
 			});
 		}
 	}
-
+	
+	private void findOtherUsers() {
+		mTable = mService.getTable(Users.class);
+		mTable.where().field("id").ne(user.getId()).and().field("location").ne("").execute(new TableQueryCallback<Users>() {
+					@Override
+					public void onCompleted(List<Users> result, int count,
+							Exception ex, ServiceFilterResponse response) {
+						for (Users user : result) {
+							if (!otherUsers.containsKey(user.getId())) {
+								MarkerOptions marker = new MarkerOptions()
+										.position(stringToCoordinate(user.getLocation()))
+										.snippet(user.getName())
+										.title("Other gay guy")
+										.draggable(false);
+								otherUsers.put(user.getId(), marker);
+								map.addMarker(marker);
+							} else {
+								MarkerOptions marker = otherUsers.get(user.getId());
+								marker.position(stringToCoordinate(user.getLocation()));
+							}
+						}
+					}
+				});
+	}
+	
+	private LatLng stringToCoordinate(String s){
+		String[] temp = s.split(",");
+		double lat = Double.parseDouble(temp[0]);
+		double lng = Double.parseDouble(temp[1]);
+		
+		return new LatLng(lat,lng);
+	}
+	
 	private void updatePositionOnServer(LatLng myLocation) {
 		String pos = myLocation.toString();
 		pos = pos.replace("lat/lng: (", "");
