@@ -13,6 +13,7 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.microsoft.windowsazure.mobileservices.*;
 
@@ -20,8 +21,8 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private GoogleMap map;
 	private LatLng myLocation;
 	private Users user;
-	private MarkerOptions marker;
-	private HashMap<String,MarkerOptions> otherUsers;
+	private Marker marker;
+	private HashMap<String,Marker> otherUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
 
@@ -39,7 +40,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		user.setLocation(i.getStringExtra("location"));
 		user.setName(i.getStringExtra("name"));
 		user.setPassword(i.getStringExtra("password"));
-		otherUsers = new HashMap<String,MarkerOptions>();
+		otherUsers = new HashMap<String,Marker>();
 		try {
 			mService = new MobileServiceClient(
 					"https://pervasivehjorte.azure-mobile.net/",
@@ -61,15 +62,15 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 				public void onMyLocationChange(Location location) {
 					myLocation = new LatLng(location.getLatitude(), location.getLongitude());
 					if (marker == null) {
-						marker = new MarkerOptions().position(myLocation)
+						MarkerOptions op = new MarkerOptions().position(myLocation)
 								.title("My location").snippet(user.getName())
 								.draggable(false);
-						map.addMarker(marker);
+						marker = map.addMarker(op);
 						CameraUpdate update = CameraUpdateFactory.newLatLngZoom(
 								myLocation, 16);
 						map.moveCamera(update);
 					} else {
-						marker.position(myLocation);
+						marker.setPosition(myLocation);
 					}
 					updatePositionOnServer(myLocation);
 					findOtherUsers();
@@ -86,16 +87,16 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 							Exception ex, ServiceFilterResponse response) {
 						for (Users user : result) {
 							if (!otherUsers.containsKey(user.getId())) {
-								MarkerOptions marker = new MarkerOptions()
+								MarkerOptions op = new MarkerOptions()
 										.position(stringToCoordinate(user.getLocation()))
 										.snippet(user.getName())
 										.title("Other gay guy")
 										.draggable(false);
+								Marker marker = map.addMarker(op);
 								otherUsers.put(user.getId(), marker);
-								map.addMarker(marker);
 							} else {
-								MarkerOptions marker = otherUsers.get(user.getId());
-								marker.position(stringToCoordinate(user.getLocation()));
+								Marker marker = otherUsers.get(user.getId());
+								marker.setPosition(stringToCoordinate(user.getLocation()));
 							}
 						}
 					}
