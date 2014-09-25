@@ -7,7 +7,11 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import com.google.android.gms.maps.*;
@@ -26,9 +30,9 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private HashMap<String,Marker> otherUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
-	private boolean bluetoothOn;
 	private BluetoothAdapter adapter;
 	private final static int REQUEST_ENABLE_BT = 1;
+	private boolean bluetoothOn;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -54,8 +58,6 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			createAndShowDialog("There was an error creating the Mobile Service. Verify the URL", "Error");
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	public void updateUser(Users u) {
@@ -98,9 +100,40 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			if (!adapter.isEnabled()) {
 				Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 				startActivityForResult(enablebt, REQUEST_ENABLE_BT);
+				bluetoothOn = true;
 			}
 			user.setBluetooth(adapter.getAddress());
 			updateUser(user);
+			Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 3600);
+			startActivity(discoverableIntent);
+			BroadcastReceiver mReceiver = new BroadcastReceiver() {
+			    @Override
+				public void onReceive(Context context, Intent intent) {
+			        String action = intent.getAction();
+			        // When discovery finds a device
+			        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+			            // Get the BluetoothDevice object from the Intent
+			            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+			            mTable = mService.getTable(Users.class);
+			            mTable.where().field("bluetooth").eq(device.getAddress()).execute(new TableQueryCallback<Users>() {
+							
+							@Override
+							public void onCompleted(List<Users> users, int arg1, Exception arg2,
+									ServiceFilterResponse arg3) {
+								if (users.size() > 0) {
+									Users u = users.get(0);
+									marker.setSnippet(marker.getSnippet() + ", " + u.getName());
+								}
+							}
+						});
+			        }
+			    }
+			};
+
+			// Register the BroadcastReceiver
+			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+			registerReceiver(mReceiver, filter);
 		} else {
 			bluetoothOn = false;
 		}
@@ -128,6 +161,9 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 						}
 					}
 				});
+		if (bluetoothOn && !adapter.isDiscovering()) {
+			adapter.startDiscovery();			
+		}
 	}
 	
 	private LatLng stringToCoordinate(String s){
