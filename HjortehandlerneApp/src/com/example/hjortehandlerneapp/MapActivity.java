@@ -16,6 +16,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.microsoft.windowsazure.mobileservices.*;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private GoogleMap map;
@@ -25,7 +37,9 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private HashMap<String,Marker> otherUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
-
+	private WifiManager wifiMan;
+	private String wifiName;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		user.setLocation(i.getStringExtra("location"));
 		user.setName(i.getStringExtra("name"));
 		user.setPassword(i.getStringExtra("password"));
+		user.setWifiName("");
 		otherUsers = new HashMap<String,Marker>();
 		try {
 			mService = new MobileServiceClient(
@@ -77,7 +92,27 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 				}
 			});
 		}
+		wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		saveWifiState();
 	}
+	
+	private void saveWifiState() {
+		if(wifiMan.isWifiEnabled()) {
+			wifiName = wifiMan.getConnectionInfo().getSSID();
+			user.setWifiName(wifiName);
+			mTable.update(user, new TableOperationCallback<Users>() {
+				@Override
+				public void onCompleted(Users arg0, Exception arg1,
+						ServiceFilterResponse arg2) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+		}
+		
+	}
+	
 	
 	private void findOtherUsers() {
 		mTable = mService.getTable(Users.class);

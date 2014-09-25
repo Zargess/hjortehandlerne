@@ -13,6 +13,9 @@ public class Users {
 	
 	@com.google.gson.annotations.SerializedName("location")
 	private String location;
+	
+	@com.google.gson.annotations.SerializedName("wifi")
+	private String wifiName;
 
 	public String getId() {
 		return id;
@@ -44,6 +47,14 @@ public class Users {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+	
+	public String getWifiName() {
+		return wifiName;
+	}
+	
+	public void setWifiName(String wifiName) {
+		this.wifiName = wifiName;
 	}
 	
 	@Override
