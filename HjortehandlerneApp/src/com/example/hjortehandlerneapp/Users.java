@@ -1,7 +1,6 @@
 package com.example.hjortehandlerneapp;
 
 public class Users {
-	
 	@com.google.gson.annotations.SerializedName("id")
 	private String id;
 	
@@ -13,6 +12,17 @@ public class Users {
 	
 	@com.google.gson.annotations.SerializedName("location")
 	private String location;
+	
+	@com.google.gson.annotations.SerializedName("bluetooth")
+	private String bluetooth;
+
+	public String getBluetooth() {
+		return bluetooth;
+	}
+
+	public void setBluetooth(String bluetooth) {
+		this.bluetooth = bluetooth;
+	}
 
 	public String getId() {
 		return id;
