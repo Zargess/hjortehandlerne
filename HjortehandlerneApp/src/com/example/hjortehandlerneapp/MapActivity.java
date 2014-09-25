@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -25,6 +26,9 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private HashMap<String,Marker> otherUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
+	private boolean bluetoothOn;
+	private BluetoothAdapter adapter;
+	private final static int REQUEST_ENABLE_BT = 1;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -50,6 +54,18 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			createAndShowDialog("There was an error creating the Mobile Service. Verify the URL", "Error");
 			e.printStackTrace();
 		}
+		
+		
+	}
+	
+	public void updateUser(Users u) {
+		mTable.update(u, new TableOperationCallback<Users>() {
+			
+			@Override
+			public void onCompleted(Users arg0, Exception arg1,
+					ServiceFilterResponse arg2) {
+			}
+		});
 	}
 
 	@Override
@@ -76,6 +92,17 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 					findOtherUsers();
 				}
 			});
+		}
+		adapter = BluetoothAdapter.getDefaultAdapter();
+		if (adapter != null) {
+			if (!adapter.isEnabled()) {
+				Intent enablebt = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				startActivityForResult(enablebt, REQUEST_ENABLE_BT);
+			}
+			user.setBluetooth(adapter.getAddress());
+			updateUser(user);
+		} else {
+			bluetoothOn = false;
 		}
 	}
 	

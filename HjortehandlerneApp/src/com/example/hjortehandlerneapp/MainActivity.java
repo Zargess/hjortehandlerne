@@ -65,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
 		u.setName(name);
 		u.setLocation("");
 		u.setPassword(pwordbox.getText().toString());
+		u.setBluetooth("");
 
 		mTable.insert(u, new TableOperationCallback<Users>() {
 			@Override
