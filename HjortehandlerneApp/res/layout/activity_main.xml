@@ -20,8 +20,7 @@
         android:id="@+id/pword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:password="true" />
+        android:inputType="textPassword" />
     
     <Button 
         android:id="@+id/nextMain"

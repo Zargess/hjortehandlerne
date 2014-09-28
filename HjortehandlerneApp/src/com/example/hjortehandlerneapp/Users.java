@@ -16,6 +16,17 @@ public class Users {
 	
 	@com.google.gson.annotations.SerializedName("wifi")
 	private String wifiName;
+	
+	@com.google.gson.annotations.SerializedName("bluetooth")
+	private String bluetooth;
+
+	public String getBluetooth() {
+		return bluetooth;
+	}
+
+	public void setBluetooth(String bluetooth) {
+		this.bluetooth = bluetooth;
+	}
 
 	public String getId() {
 		return id;
