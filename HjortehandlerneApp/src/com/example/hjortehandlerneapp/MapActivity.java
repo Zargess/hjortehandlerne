@@ -18,8 +18,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.microsoft.windowsazure.mobileservices.*;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 
@@ -29,6 +31,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private Users user;
 	private Marker marker;
 	private HashMap<String,Marker> otherUsers;
+	private HashMap<Users, Boolean> nearbyUsers;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
 	private WifiManager wifiMan;
@@ -36,6 +39,8 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private BluetoothAdapter adapter;
 	private final static int REQUEST_ENABLE_BT = 1;
 	private boolean bluetoothOn;
+	private boolean notifications;
+	private boolean showingNotification;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -53,6 +58,9 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		user.setPassword(i.getStringExtra("password"));
 		user.setWifiName("");
 		otherUsers = new HashMap<String,Marker>();
+		nearbyUsers = new HashMap<Users, Boolean>();
+		notifications = true;
+		showingNotification = false;
 		try {
 			mService = new MobileServiceClient(
 					"https://pervasivehjorte.azure-mobile.net/",
@@ -107,37 +115,53 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 3600);
 			startActivity(discoverableIntent);
-			BroadcastReceiver mReceiver = new BroadcastReceiver() {
-			    @Override
-				public void onReceive(Context context, Intent intent) {
-			        String action = intent.getAction();
-			        // When discovery finds a device
-			        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-			            // Get the BluetoothDevice object from the Intent
-			            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-			            mTable = mService.getTable(Users.class);
-			            mTable.where().field("bluetooth").eq(device.getAddress()).execute(new TableQueryCallback<Users>() {
-							
-							@Override
-							public void onCompleted(List<Users> users, int arg1, Exception arg2,
-									ServiceFilterResponse arg3) {
-								if (users.size() > 0) {
-									Users u = users.get(0);
-									marker.setSnippet(marker.getSnippet() + ", " + u.getName());
-								}
-							}
-						});
-			        }
-			    }
-			};
-			// Register the BroadcastReceiver
-			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-			registerReceiver(mReceiver, filter);
+			
 		} else {
 			bluetoothOn = false;
 		}
 	}
 
+	private void bluetoothUpdate() {
+		BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		    @Override
+			public void onReceive(Context context, Intent intent) {
+		        String action = intent.getAction();
+		        // When discovery finds a device
+		        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+		            // Get the BluetoothDevice object from the Intent
+		            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+		            mTable = mService.getTable(Users.class);
+		            mTable.where().field("bluetooth").eq(device.getAddress()).execute(new TableQueryCallback<Users>() {
+						
+						@Override
+						public void onCompleted(List<Users> users, int arg1, Exception arg2,
+								ServiceFilterResponse arg3) {
+							if (users.size() > 0) {
+								Users u = users.get(0);
+								
+								for(Users us : nearbyUsers.keySet()) {
+									if (us.getId().equals(u.getId())) {
+										return;
+									}
+								}
+								nearbyUsers.put(u, false);
+								String res = "";
+								for(Users s : nearbyUsers.keySet()) {
+									res += ", " + s.getName();
+									System.out.println(s);
+								}
+								marker.setSnippet(user.getName()  + res);
+							}
+						}
+					});
+		        }
+		    }
+		};
+		// Register the BroadcastReceiver
+		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		registerReceiver(mReceiver, filter);	
+	}
+	
 	private void updateUser(Users u) {
 		mTable.update(u, new TableOperationCallback<Users>() {
 			
@@ -189,7 +213,19 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 					}
 				});
 		if (bluetoothOn && !adapter.isDiscovering()) {
-			adapter.startDiscovery();			
+			bluetoothUpdate();
+			adapter.startDiscovery();	
+			
+		}
+		showDialogs();
+	}
+	
+	private void showDialogs() {
+		for(Users s : nearbyUsers.keySet()) {
+			if(!nearbyUsers.get(s)) {
+				createAndShowDialog(s.getName() + " er i nærheden", "Ven i nærheden!");
+				nearbyUsers.put(s, true);
+			}
 		}
 	}
 	
@@ -216,11 +252,27 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		});
 	}
 	
+	
 	private void createAndShowDialog(String message, String title) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		if(notifications && !showingNotification) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage(message);
-		builder.setTitle(title);
-		builder.create().show();
+			builder.setCancelable(false);
+			builder.setNegativeButton("Turn off notifications",new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		               showingNotification = false;
+		               notifications = false;
+		           }
+		       });
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		               showingNotification = false;
+		           }
+		       });
+			builder.setMessage(message);
+			builder.setTitle(title);
+			builder.create().show();
+			showingNotification = true;
+		}
 	}
 }
