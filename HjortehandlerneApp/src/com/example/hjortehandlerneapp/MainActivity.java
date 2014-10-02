@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,11 +61,11 @@ public class MainActivity extends ActionBarActivity {
 		builder.create().show();
 	}
 
-	private void createUser(String name) {
+	private void createUser(String name, String pword) {
 		Users u = new Users();
 		u.setName(name);
 		u.setLocation("");
-		u.setPassword(pwordbox.getText().toString());
+		u.setPassword(pword);
 
 		mTable.insert(u, new TableOperationCallback<Users>() {
 			@Override
@@ -77,23 +78,31 @@ public class MainActivity extends ActionBarActivity {
 		});
 	}
 
-	public void userExists(final String name) {
+	public void userExists(final String name, final String pword) {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		mTable.where().field("name").eq(name)
 				.execute(new TableQueryCallback<Users>() {
 					@Override
 					public void onCompleted(List<Users> result, int count,
 							Exception ex, ServiceFilterResponse response) {
-						if (result.size() >= 1) {
-							switchActivity(result.get(0));
+						if (result.size() >= 1 ) {
+							if(result.get(0).getPassword().equals(pword)) {
+								switchActivity(result.get(0));
+							} else {
+								builder.setCancelable(true);
+								builder.setTitle("Wrong password!");
+								builder.setMessage("Please try with a different password or username");
+								builder.create().show();
+							}
 						} else {
-							createUser(name);
+							createUser(name, pword);
 						}
 					}
 				});
 	}
 
 	public void btnNextClick(View v) {
-		userExists(textbox.getText().toString());
+		userExists(textbox.getText().toString(), pwordbox.getText().toString());
 	}
 
 	private void switchActivity(Users user) {
