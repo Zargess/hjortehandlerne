@@ -1472,10 +1472,10 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f080028;
         public static final int action_menu_presenter=0x7f080029;
         public static final int action_mode_close_button=0x7f080036;
-        public static final int action_settings=0x7f080052;
         public static final int activity_chooser_view_content=0x7f080037;
         public static final int always=0x7f08001e;
         public static final int beginning=0x7f080023;
+        public static final int bluetooth=0x7f080053;
         public static final int book_now=0x7f080010;
         public static final int buyButton=0x7f08000a;
         public static final int buy_now=0x7f08000f;
@@ -1542,6 +1542,7 @@ containing a value of this type.
         public static final int top_action_bar=0x7f080032;
         public static final int up=0x7f080033;
         public static final int useLogo=0x7f080016;
+        public static final int wifi=0x7f080052;
         public static final int withText=0x7f08001f;
         public static final int wrap_content=0x7f08000d;
     }
@@ -1646,6 +1647,7 @@ containing a value of this type.
         public static final int abc_shareactionprovider_share_with_application=0x7f070025;
         public static final int action_settings=0x7f070029;
         public static final int app_name=0x7f070027;
+        public static final int bluetooth=0x7f07002c;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -1741,6 +1743,7 @@ containing a value of this type.
          available or up-to-date 
          */
         public static final int wallet_buy_button_place_holder=0x7f070019;
+        public static final int wifi=0x7f07002b;
     }
     public static final class style {
         /** 

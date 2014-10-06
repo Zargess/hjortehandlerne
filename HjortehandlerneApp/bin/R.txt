@@ -336,10 +336,10 @@ int id action_context_bar 0x7f08002f
 int id action_menu_divider 0x7f080028
 int id action_menu_presenter 0x7f080029
 int id action_mode_close_button 0x7f080036
-int id action_settings 0x7f080052
 int id activity_chooser_view_content 0x7f080037
 int id always 0x7f08001e
 int id beginning 0x7f080023
+int id bluetooth 0x7f080053
 int id book_now 0x7f080010
 int id buyButton 0x7f08000a
 int id buy_now 0x7f08000f
@@ -406,6 +406,7 @@ int id title 0x7f08003d
 int id top_action_bar 0x7f080032
 int id up 0x7f080033
 int id useLogo 0x7f080016
+int id wifi 0x7f080052
 int id withText 0x7f08001f
 int id wrap_content 0x7f08000d
 int integer abc_max_action_buttons 0x7f090001
@@ -453,6 +454,7 @@ int string abc_shareactionprovider_share_with 0x7f070026
 int string abc_shareactionprovider_share_with_application 0x7f070025
 int string action_settings 0x7f070029
 int string app_name 0x7f070027
+int string bluetooth 0x7f07002c
 int string common_google_play_services_enable_button 0x7f07000b
 int string common_google_play_services_enable_text 0x7f07000a
 int string common_google_play_services_enable_title 0x7f070009
@@ -481,6 +483,7 @@ int string common_signin_button_text_long 0x7f070018
 int string hello_world 0x7f070028
 int string nextMainBtn 0x7f07002a
 int string wallet_buy_button_place_holder 0x7f070019
+int string wifi 0x7f07002b
 int style AppBaseTheme 0x7f050090
 int style AppTheme 0x7f050091
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f050068

@@ -4,9 +4,15 @@
     tools:context="com.example.hjortehandlerneapp.MainActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/wifi"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/wifi"
+        app:showAsAction="never"/>
+    
+    <item 
+        android:id="@+id/bluetooth"
+        android:orderInCategory="200"
+        android:title="@string/bluetooth"
         app:showAsAction="never"/>
 
 </menu>

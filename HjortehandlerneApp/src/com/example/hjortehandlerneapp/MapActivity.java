@@ -11,6 +11,9 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
@@ -31,7 +34,8 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private Users user;
 	private Marker marker;
 	private HashMap<String,Marker> otherUsers;
-	private HashMap<Users, Boolean> nearbyUsers;
+	private HashMap<Users, Boolean> nearbyUsersBluetooth;
+	private HashMap<Users, Boolean> nearbyUsersWifi;
 	private MobileServiceClient mService;
 	private MobileServiceTable<Users> mTable;
 	private WifiManager wifiMan;
@@ -41,6 +45,8 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 	private boolean bluetoothOn;
 	private boolean notifications;
 	private boolean showingNotification;
+	private boolean useBluetooth;
+	private boolean useWifi;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -58,9 +64,12 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		user.setPassword(i.getStringExtra("password"));
 		user.setWifiName("");
 		otherUsers = new HashMap<String,Marker>();
-		nearbyUsers = new HashMap<Users, Boolean>();
+		nearbyUsersBluetooth = new HashMap<Users, Boolean>();
+		nearbyUsersWifi = new HashMap<Users, Boolean>();
 		notifications = true;
 		showingNotification = false;
+		useBluetooth = true;
+		useWifi = false;
 		try {
 			mService = new MobileServiceClient(
 					"https://pervasivehjorte.azure-mobile.net/",
@@ -70,6 +79,36 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			createAndShowDialog("There was an error creating the Mobile Service. Verify the URL", "Error");
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.wifi) {
+			if(useWifi) {
+				useWifi = false;
+				item.setTitle("Wifi off");
+			} else {
+				useWifi = true;
+				item.setTitle("Wifi on");
+			}
+			return true;
+		} else if (id == R.id.bluetooth) {
+			if (useBluetooth) {
+				useBluetooth = false;
+				item.setTitle("Bluetooth off");
+			} else {
+				useBluetooth = true;
+				item.setTitle("Bluetooth on");
+			}
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -138,19 +177,7 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 								ServiceFilterResponse arg3) {
 							if (users.size() > 0) {
 								Users u = users.get(0);
-								
-								for(Users us : nearbyUsers.keySet()) {
-									if (us.getId().equals(u.getId())) {
-										return;
-									}
-								}
-								nearbyUsers.put(u, false);
-								String res = "";
-								for(Users s : nearbyUsers.keySet()) {
-									res += ", " + s.getName();
-									System.out.println(s);
-								}
-								marker.setSnippet(user.getName()  + res);
+								updateSnippet(u, nearbyUsersBluetooth);
 							}
 						}
 					});
@@ -160,6 +187,21 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		// Register the BroadcastReceiver
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		registerReceiver(mReceiver, filter);	
+	}
+	
+	private void updateSnippet(Users u, HashMap<Users,Boolean> nearbyUsers) {
+		for(Users us : nearbyUsers.keySet()) {
+			if (us.getId().equals(u.getId())) {
+				return;
+			}
+		}
+		nearbyUsers.put(u, false);
+		String res = "";
+		for(Users s : nearbyUsers.keySet()) {
+			res += ", " + s.getName();
+			System.out.println(s);
+		}
+		marker.setSnippet(user.getName()  + res);
 	}
 	
 	private void updateUser(Users u) {
@@ -180,7 +222,6 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 				@Override
 				public void onCompleted(Users arg0, Exception arg1,
 						ServiceFilterResponse arg2) {
-					// TODO Auto-generated method stub
 					
 				}
 			});
@@ -189,6 +230,29 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 		
 	}
 	
+	private void checkWifi() {
+		mTable = mService.getTable(Users.class);
+		saveWifiState();
+		
+		mTable.where().field("wifi").eq(user.getWifiName()).execute(new TableQueryCallback<Users>() {
+			
+			@Override
+			public void onCompleted(List<Users> arg0, int arg1, Exception arg2,
+					ServiceFilterResponse arg3) {
+				for(Users u : arg0) {
+					boolean founduser = false;
+					for(Users us : nearbyUsersWifi.keySet()) {
+						if (us.getId().equals(u.getId())) {
+							founduser = true;
+						}
+					}
+					if(!founduser) {
+						nearbyUsersWifi.put(u, false);
+					}
+				}
+			}
+		});
+	}
 	
 	private void findOtherUsers() {
 		mTable = mService.getTable(Users.class);
@@ -217,12 +281,18 @@ public class MapActivity extends Activity implements OnMapLoadedCallback {
 			adapter.startDiscovery();	
 			
 		}
-		showDialogs();
+		checkWifi();
+		if (useBluetooth) {
+			showDialogs(nearbyUsersBluetooth);
+		}
+		if (useWifi) {
+			showDialogs(nearbyUsersWifi);
+		}
 	}
 	
-	private void showDialogs() {
+	private void showDialogs(HashMap<Users, Boolean> nearbyUsers) {
 		for(Users s : nearbyUsers.keySet()) {
-			if(!nearbyUsers.get(s)) {
+			if(!nearbyUsers.get(s) && !showingNotification && !s.getId().equals(user.getId())) {
 				createAndShowDialog(s.getName() + " er i nærheden", "Ven i nærheden!");
 				nearbyUsers.put(s, true);
 			}
